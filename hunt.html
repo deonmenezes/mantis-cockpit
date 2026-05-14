@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mantis Cockpit · Hunt</title>
+  <link rel="icon" type="image/png" href="assets/mantis-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div class="cockpit" id="cockpit">
+    <main class="main">
+      <section class="content">
+
+        <div class="page-head">
+          <div>
+            <h1>Hunt: <span class="mono" style="color: var(--accent-hi); font-weight: 600">target.example.com</span></h1>
+            <p class="sub">Wave 2 · started 14:22 local · session <code>S-2026-05-14-c4f2</code></p>
+          </div>
+          <div class="actions">
+            <a class="btn ghost" href="#">View logs</a>
+            <a class="btn danger" href="#">⨯ Cancel hunt</a>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <a class="tab active">Overview</a>
+          <a class="tab">Findings <span class="badge">3</span></a>
+          <a class="tab">Endpoints <span class="badge">47</span></a>
+          <a class="tab">Agents <span class="badge">6</span></a>
+          <a class="tab">Request logs <span class="badge">812</span></a>
+        </div>
+
+        <div class="hunt-status">
+          <div class="head">
+            <div class="spinner"></div>
+            <div>
+              <div class="label">Running <span class="timer" id="hunt-timer">2h 11m</span></div>
+              <div style="color: var(--dim); font-size: 12px;">Phase: HUNT · Wave 2 of 6</div>
+            </div>
+          </div>
+          <div class="pipeline">
+            <div class="step done"><div class="dot">✓</div><div class="pname">Recon</div></div>
+            <div class="line done"></div>
+            <div class="step done"><div class="dot">✓</div><div class="pname">Auth</div></div>
+            <div class="line done"></div>
+            <div class="step current"><div class="dot">●</div><div class="pname">Hunt</div></div>
+            <div class="line"></div>
+            <div class="step"><div class="dot">4</div><div class="pname">Chain</div></div>
+            <div class="line"></div>
+            <div class="step"><div class="dot">5</div><div class="pname">Verify</div></div>
+            <div class="line"></div>
+            <div class="step"><div class="dot">6</div><div class="pname">Grade</div></div>
+            <div class="line"></div>
+            <div class="step"><div class="dot">7</div><div class="pname">Report</div></div>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:30px;">
+          <h2 style="margin:0; font-size:16px; font-weight:600; letter-spacing:-0.005em;">Active hunters</h2>
+          <a class="btn ghost" href="#">View all 12 agents</a>
+        </div>
+
+        <div class="agents">
+          <div class="agent-tile">
+            <div class="preview">$ curl -s https://target.example.com/api/v2/invoices/F-001
+{ "ok": false, "msg": "forbidden" }
+$ curl -s -H "Authorization: Bearer $TOKEN_B" \
+     https://target.example.com/api/v2/invoices/F-001
+{ "id": "F-001", "customer": "alice@…",
+  "total": 4200, "items": [ … ] }
+> IDOR confirmed</div>
+            <div class="meta">
+              <span class="live"></span>
+              <span class="name">hunter-001</span>
+              <span class="role">IDOR · surface-3</span>
+            </div>
+          </div>
+          <div class="agent-tile">
+            <div class="preview">$ subfinder -d target.example.com
+admin.target.example.com
+api.target.example.com
+billing.target.example.com
+mail.target.example.com
+…  +24 more
+$ httpx -l subs.txt -title -tech
+200  admin.… Next.js, Cloudflare
+200  api.…   Express, AWS WAF
+200  bill.…  Firebase</div>
+            <div class="meta">
+              <span class="live"></span>
+              <span class="name">hunter-002</span>
+              <span class="role">Recon · sub-enum</span>
+            </div>
+          </div>
+          <div class="agent-tile">
+            <div class="preview">> testing JWT none-alg bypass
+> alg=none, signature=""
+> 401 — signature required, good
+> testing alg=HS256 with public key
+> 401 — kid validated, good
+> testing kid path traversal
+> kid=../../../dev/null
+> 200 OK — kid not sanitized
+> ESCALATE: auth bypass</div>
+            <div class="meta">
+              <span class="live"></span>
+              <span class="name">hunter-003</span>
+              <span class="role">JWT · auth/login</span>
+            </div>
+          </div>
+          <div class="agent-tile">
+            <div class="preview">> SSRF probe: /api/preview?url=
+> http://169.254.169.254/…
+> 403 — metadata blocked
+> retry: http://[::ffff:169.254.169.254]
+> 200 — IPv6 bypass works
+> token retrieved, iam role:
+>   target-prod-readonly
+> chain candidate logged</div>
+            <div class="meta">
+              <span class="live"></span>
+              <span class="name">hunter-004</span>
+              <span class="role">SSRF · preview-api</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kv">
+          <h3>Configuration</h3>
+          <dl class="kv-grid">
+            <dt>Target</dt><dd>target.example.com</dd>
+            <dt>Scope file</dt><dd>~/.mantis/scopes/target.txt</dd>
+            <dt>Session</dt><dd>S-2026-05-14-c4f2</dd>
+            <dt>Wave</dt><dd>2 of 6 (auto-coverage gating)</dd>
+            <dt>Hunter model</dt><dd>claude-opus-4-7</dd>
+            <dt>Verifier model</dt><dd>claude-sonnet-4-6 ×3</dd>
+            <dt>Started</dt><dd>2026-05-14 14:22:08 +0530</dd>
+            <dt>ETA</dt><dd>~38m remaining</dd>
+          </dl>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/cockpit.js"></script>
+  <script>
+    Cockpit.mount({ page: 'hunts', crumb: ['Cockpit', 'Live Hunts', 'target.example.com'] });
+  </script>
+</body>
+</html>

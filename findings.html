@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mantis Cockpit · Findings</title>
+  <link rel="icon" type="image/png" href="assets/mantis-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div class="cockpit" id="cockpit">
+    <main class="main">
+      <section class="content">
+
+        <div class="page-head">
+          <div>
+            <h1>Findings</h1>
+            <p class="sub">All findings across every hunt, grouped by severity. Sorted by recency.</p>
+          </div>
+          <div class="actions">
+            <a class="btn ghost" href="#">Filter</a>
+            <a class="btn primary" href="#">Export CSV</a>
+          </div>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="label"><span class="dot red"></span>Critical</div>
+            <div class="num">4</div>
+            <div class="delta">+1 today</div>
+          </div>
+          <div class="stat-card">
+            <div class="label"><span class="dot amber"></span>High</div>
+            <div class="num">11</div>
+            <div class="delta">+3 today</div>
+          </div>
+          <div class="stat-card">
+            <div class="label"><span class="dot blue"></span>Medium</div>
+            <div class="num">23</div>
+            <div class="delta">+5 today</div>
+          </div>
+          <div class="stat-card">
+            <div class="label"><span class="dot"></span>Low / Info</div>
+            <div class="num">89</div>
+            <div class="delta">+12 today</div>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <a class="tab active">All <span class="badge">127</span></a>
+          <a class="tab">Verified <span class="badge">42</span></a>
+          <a class="tab">Pending review</a>
+          <a class="tab">Reported <span class="badge">28</span></a>
+          <a class="tab">Rejected</a>
+        </div>
+
+        <table class="tbl" id="findings-tbl">
+          <thead>
+            <tr>
+              <th style="width: 80px">ID</th>
+              <th>Finding</th>
+              <th>Target</th>
+              <th>Severity</th>
+              <th>Status</th>
+              <th style="width: 140px">Found</th>
+            </tr>
+          </thead>
+          <tbody><!-- injected --></tbody>
+        </table>
+
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/cockpit.js"></script>
+  <script src="assets/cockpit-data.js"></script>
+  <script>
+    Cockpit.mount({ page: 'findings', crumb: ['Cockpit', 'Findings'] });
+    CockpitData.renderFindings(document.querySelector('#findings-tbl tbody'));
+  </script>
+</body>
+</html>
